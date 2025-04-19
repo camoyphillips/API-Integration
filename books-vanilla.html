@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Books API</title>
+</head>
+<body>
+    
+    <h1>Google Books API</h1>
+
+    <!-- This is the container where the book titles will be displayed -->
+    <ul id="books"></ul>
+
+    <script>
+        // Your Google Books API key
+        var key = 'AIzaSyBhvZ9YRSmUNZsPuqJfiNCZJD7-xmPMLgs';
+
+        // Base URL for the Google Books API
+        var url = 'https://www.googleapis.com/books/v1/volumes?q=';
+
+        // Search keyword
+        var search = 'javascript'; 
+
+        // Create a new XMLHttpRequest object
+        var httpRequest = new XMLHttpRequest();
+
+        // Define what happens when the state of the request changes
+        httpRequest.onreadystatechange = function() {
+            // Debugging logs
+            console.log(httpRequest.readyState);
+            console.log(httpRequest.responseText);
+
+            // When request is complete
+            if (httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status === 200) {
+                var data = JSON.parse(httpRequest.responseText);
+                var books = document.getElementById("books");
+
+                for (var i = 0; i < data.items.length; i++) {
+                    var title = data.items[i].volumeInfo.title;
+                    var link = data.items[i].volumeInfo.infoLink;
+                    var image = data.items[i].volumeInfo.imageLinks?.smallThumbnail;
+
+                    var newBook = "<li><a href='" + link + "' target='_blank'><img src='" + image + "' alt='" + title + "' style='vertical-align: middle; width: 80px; margin-right: 10px;'>" + title + "</a></li>";
+                    books.innerHTML += newBook;
+                }
+            }
+        };
+
+        // Send request
+        httpRequest.open("GET", url + search + "&key=" + key);
+        httpRequest.send();
+    </script>
+
+</body>
+</html>
